@@ -137,40 +137,84 @@ public class Inputy {
             System.out.println("Błąd podczas przeglądania zwierząt: " + e.getMessage());
         }
     }
-    private void szukaj(){
-        try{
-            Connection connection = LaczenieBaza.getConnection();
-            String slowo = scanner.nextLine();
+//    private void szukaj(){
+//        try{
+//            Connection connection = LaczenieBaza.getConnection();
+//            String slowo = scanner.nextLine();
+//
+//            if (slowo != null){
+//                slowo.trim();
+//            }
+//            String sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
+//                    + "rodzaj = '" + slowo + "' "
+//                    + "OR imie = '" + slowo + "' "
+//                    + "OR wiek = '" + slowo + "' "
+//                    + "OR czy_zarezerwowany = '" + slowo + "'";
+//
+//            Statement stm = connection.createStatement();
+//            ResultSet rs = stm.executeQuery(sql);
+//
+//            while (rs.next()){
+//                String rodzaj = rs.getString("rodzaj").toLowerCase();
+//                String imie = rs.getString("imie").toLowerCase();
+//                String wiek = rs.getString("wiek").toLowerCase();
+//                String czy_zarezerwowany = rs.getString("czy_zarezerwowany").toLowerCase();
+//
+//                String  wynik = "Rodzaj zwierzaka: " + rodzaj + ", " + "imie zwierzaka: " + imie + ", " + "wiek zwierzaka: " + wiek + ", " + "czy Zarezerwowany : " + czy_zarezerwowany;
+//                System.out.println(wynik);
+//            }
+//
+//            connection.close();
+//            scanner.close();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
+private void szukaj(){
+    try{
+        Connection connection = LaczenieBaza.getConnection();
+        String slowo = scanner.nextLine();
 
-            if (slowo != null){
-                slowo.trim();
+        if (slowo != null){
+            slowo.trim();
+        }
+        String sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
+                + "rodzaj = '" + slowo + "' "
+                + "OR imie = '" + slowo + "' "
+                + "OR wiek = '" + slowo + "' "
+                + "OR czy_zarezerwowany = '" + slowo + "'";
+
+        Statement stm = connection.createStatement();
+        ResultSet rs = stm.executeQuery(sql);
+        List<Zwierze> zwierzeArrayList = new ArrayList<>();
+        while (rs.next()){
+            Zwierze zwierze = new Zwierze(rs.getInt("id"),
+                    rs.getString("rodzaj"),
+                    rs.getString("imie"),
+                    rs.getInt("wiek"),
+                    rs.getBoolean("czy_zarezerwowany")
+            );
+            zwierzeArrayList.add(zwierze);
+            String czyZarezerwowanyTekst = "";
+            for(Zwierze z: zwierzeArrayList){
+                if (z.isCzyZarezerwowany()){
+                    czyZarezerwowanyTekst = "tak";
+                }else{
+                    czyZarezerwowanyTekst= "nie";
+                }
             }
-            String sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
-                    + "rodzaj = '" + slowo + "' "
-                    + "OR imie = '" + slowo + "' "
-                    + "OR wiek = '" + slowo + "' "
-                    + "OR czy_zarezerwowany = '" + slowo + "'";
-
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery(sql);
-
-            while (rs.next()){
-                String rodzaj = rs.getString("rodzaj").toLowerCase();
-                String imie = rs.getString("imie").toLowerCase();
-                String wiek = rs.getString("wiek").toLowerCase();
-                String czy_zarezerwowany = rs.getString("czy_zarezerwowany").toLowerCase();
-
-                String  wynik = "Rodzaj zwierzaka: " + rodzaj + ", " + "imie zwierzaka: " + imie + ", " + "wiek zwierzaka: " + wiek + ", " + "czy Zarezerwowany : " + czy_zarezerwowany;
-                System.out.println(wynik);
-            }
-
-            connection.close();
-            scanner.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            String  wynik = "Rodzaj zwierzaka: " + zwierze.getRodzaj() + ", " + "imie zwierzaka: " + zwierze.getImie() + ", " + "wiek zwierzaka: " + zwierze.getWiek() + ", " + "czy Zarezerwowany : " + czyZarezerwowanyTekst;
+            System.out.println(wynik);
         }
 
+        connection.close();
+        scanner.close();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
+
+}
 
     private String generujKodRezerwacji(){
         return UUID.randomUUID().toString().toLowerCase().substring(0,8);
