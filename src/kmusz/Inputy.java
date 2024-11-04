@@ -180,16 +180,13 @@ private void szukaj(){
             slowo.trim();
         }
         String sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
-                + "rodzaj = '" + slowo + "' "
-                + "OR imie = '" + slowo + "' "
-                + "OR wiek = '" + slowo + "' "
-                + "OR czy_zarezerwowany = '" + slowo + "'";
+                + "rodzaj LIKE "+slowo+" OR imie LIKE "+slowo+" OR CAST(wiek AS CHAR) LIKE "+slowo+" OR czy_zarezerwowany LIKE "+slowo+";";
 
         Statement stm = connection.createStatement();
         ResultSet rs = stm.executeQuery(sql);
         List<Zwierze> zwierzeArrayList = new ArrayList<>();
         while (rs.next()){
-            Zwierze zwierze = new Zwierze(rs.getInt("id"),
+            Zwierze zwierze = new Zwierze(
                     rs.getString("rodzaj"),
                     rs.getString("imie"),
                     rs.getInt("wiek"),
@@ -209,7 +206,6 @@ private void szukaj(){
         }
 
         connection.close();
-        scanner.close();
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }
@@ -272,9 +268,9 @@ private void szukaj(){
             System.out.println("Jakie rodzaj zwierzecia chcesz dodać?");
             String rodzaj = scanner.nextLine().toLowerCase();
             System.out.println("podaj imie zwierzecia");
-            String imie = scanner.nextLine();
+            String imie = scanner.nextLine().toLowerCase();
             System.out.println("podaj wiek zwierzecia");
-            String wiek = scanner.nextLine(); // Upewnij się, że to jest liczba całkowita.
+            String wiek = scanner.nextLine().toLowerCase();
             System.out.println("podaj czy zwierze jest zarezerwowane (true/false)");
             Boolean czyRezerwacja = scanner.nextBoolean();
 
@@ -287,8 +283,8 @@ private void szukaj(){
             if (czy_dodane > 0) {
                 System.out.println("Dodano do bazy");
             }
-
             connection.close();
+            return;
         } catch (SQLException e) {
             System.out.println("Błąd podczas dodawania zwierzęcia: " + e.getMessage());
         }

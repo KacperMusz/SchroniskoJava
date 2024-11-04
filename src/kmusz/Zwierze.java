@@ -19,6 +19,12 @@ public class Zwierze {
         this.wiek = wiek;
         this.czyZarezerwowany = czyZarezerwowany;
     }
+    public Zwierze(String rodzaj, String imie, int wiek, boolean czyZarezerwowany) {
+        this.rodzaj = rodzaj;
+        this.imie = imie;
+        this.wiek = wiek;
+        this.czyZarezerwowany = czyZarezerwowany;
+    }
 
     public int getId() {
         return id;
