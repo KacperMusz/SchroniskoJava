@@ -174,13 +174,16 @@ public class Inputy {
 private void szukaj(){
     try{
         Connection connection = LaczenieBaza.getConnection();
+        System.out.println("Szukaj zwierzat: ");
         String slowo = scanner.nextLine();
 
         if (slowo != null){
             slowo.trim();
         }
         String sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
-                + "rodzaj LIKE "+slowo+" OR imie LIKE "+slowo+" OR CAST(wiek AS CHAR) LIKE "+slowo+" OR czy_zarezerwowany LIKE "+slowo+";";
+                + "rodzaj LIKE '"+slowo+"' OR imie LIKE '"+slowo+"' OR wiek LIKE '"+slowo+"' OR czy_zarezerwowany LIKE '"+slowo+"';";
+
+        System.out.println(sql);
 
         Statement stm = connection.createStatement();
         ResultSet rs = stm.executeQuery(sql);
