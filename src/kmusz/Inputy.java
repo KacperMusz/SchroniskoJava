@@ -1,38 +1,45 @@
 package kmusz;
 
+//import java.security.MessageDigest;
+//import java.security.NoSuchAlgorithmException;
+//import java.security.SecureRandom;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class Inputy {
     Scanner scanner = new Scanner(System.in);
 
     public void konsola(){
-        System.out.println("Schronisko wpisz (przegladaj) zeby zobaczyc dostepne zwierzeta,(szukaj) aby wyszukac konkretne zwierze, (rezerwuj) aby zarezerwowac zwierze, (dodaj) dodac zwierze do bazy danych, (usun) aby usunac zwierze, koniec(kończy prace z aplikajca) ");
+        String wiadomosc = "System.out.println(\"Schronisko wpisz (przegladaj) zeby zobaczyc dostepne zwierzeta,(szukaj) aby wyszukac konkretne zwierze, (rezerwuj) aby zarezerwowac zwierze, (dodaj) dodac zwierze do bazy danych, (usun) aby usunac zwierze, koniec(kończy prace z aplikajca) \");";
+        System.out.println(wiadomosc);
         while (scanner.hasNextLine()){
             String linia = scanner.nextLine();
 
             switch (linia){
                 case "koniec":
                     System.out.println("dziekuje");
+                    return;
 
-                    break;
                 case "przegladaj":
                         przegladaj();
+                    System.out.println(wiadomosc);
                     break;
+
                 case "szukaj":
-                szukaj();
+                        szukaj();
+                    System.out.println(wiadomosc);
                     break;
                 case "rezerwuj":
-                    rezerwuj();
+                        rezerwuj();
+                    System.out.println(wiadomosc);
                     break;
                 case "dodaj":
-                    dodaj();
+                        dodaj();
+                    System.out.println(wiadomosc);
                     break;
                 case "usun":
-
+                    usun();
+                    System.out.println(wiadomosc);
                     break;
                 default:
                     System.out.println("wpisano nieznaza komende");
@@ -137,40 +144,7 @@ public class Inputy {
             System.out.println("Błąd podczas przeglądania zwierząt: " + e.getMessage());
         }
     }
-//    private void szukaj(){
-//        try{
-//            Connection connection = LaczenieBaza.getConnection();
-//            String slowo = scanner.nextLine();
-//
-//            if (slowo != null){
-//                slowo.trim();
-//            }
-//            String sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
-//                    + "rodzaj = '" + slowo + "' "
-//                    + "OR imie = '" + slowo + "' "
-//                    + "OR wiek = '" + slowo + "' "
-//                    + "OR czy_zarezerwowany = '" + slowo + "'";
-//
-//            Statement stm = connection.createStatement();
-//            ResultSet rs = stm.executeQuery(sql);
-//
-//            while (rs.next()){
-//                String rodzaj = rs.getString("rodzaj").toLowerCase();
-//                String imie = rs.getString("imie").toLowerCase();
-//                String wiek = rs.getString("wiek").toLowerCase();
-//                String czy_zarezerwowany = rs.getString("czy_zarezerwowany").toLowerCase();
-//
-//                String  wynik = "Rodzaj zwierzaka: " + rodzaj + ", " + "imie zwierzaka: " + imie + ", " + "wiek zwierzaka: " + wiek + ", " + "czy Zarezerwowany : " + czy_zarezerwowany;
-//                System.out.println(wynik);
-//            }
-//
-//            connection.close();
-//            scanner.close();
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
+
 private void szukaj(){
     try{
         Connection connection = LaczenieBaza.getConnection();
@@ -182,8 +156,6 @@ private void szukaj(){
         }
         String sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
                 + "rodzaj LIKE '"+slowo+"' OR imie LIKE '"+slowo+"' OR wiek LIKE '"+slowo+"' OR czy_zarezerwowany LIKE '"+slowo+"';";
-
-        System.out.println(sql);
 
         Statement stm = connection.createStatement();
         ResultSet rs = stm.executeQuery(sql);
@@ -236,7 +208,7 @@ private void szukaj(){
                 return;
             }
             System.out.println("Zwierzeta w naszym schronisku");
-            System.out.println("");
+            System.out.println("\n");
             przegladajRezerwacja();
             System.out.println("wpisz id zwierzaka ktore chcesz zarezerwowac");
             String id = scanner.nextLine().toLowerCase();
@@ -244,7 +216,6 @@ private void szukaj(){
             przegladajRezerwacjaKonkretneZwierze(id);
             String wybor = scanner.nextLine().toLowerCase().trim();
             if (wybor.equals("nie")){
-//                System.out.println("wpisales nie");
                 return;
             }else{
                 Klient klient = new Klient(imie,nazwisko,nrTelefonu,kod);
@@ -259,7 +230,6 @@ private void szukaj(){
             }
 
             connection.close();
-            return;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -275,7 +245,7 @@ private void szukaj(){
             System.out.println("podaj wiek zwierzecia");
             String wiek = scanner.nextLine().toLowerCase();
             System.out.println("podaj czy zwierze jest zarezerwowane (true/false)");
-            Boolean czyRezerwacja = scanner.nextBoolean();
+            boolean czyRezerwacja = scanner.nextBoolean();
 
             String sql = "INSERT INTO zwierze (rodzaj, imie, wiek, czy_zarezerwowany) VALUES "
                     + "('" + rodzaj + "', '" + imie + "', " + wiek + ", " + czyRezerwacja + ")";
@@ -287,13 +257,41 @@ private void szukaj(){
                 System.out.println("Dodano do bazy");
             }
             connection.close();
-            return;
+
         } catch (SQLException e) {
             System.out.println("Błąd podczas dodawania zwierzęcia: " + e.getMessage());
         }
     }
 
-    private void usun(){
-
+    public void usun(){
+//        try (Connection connection = LaczenieBaza.getConnection()){
+//            System.out.println("Usuwanie zwierzat" +
+//                    "\n(jakby co to login admina to login a haslo to haslo)");
+//            System.out.println("podaj login");
+//            String login = scanner.nextLine();
+//            System.out.println("podaj haslo");
+//            String haslo = scanner.nextLine();
+//
+//            Statement statement = connection.createStatement();
+//            String sql = "SELECT zwierze.id, zwierze.rodzaj, zwierze.imie, zwierze.wiek,zwierze.czy_zarezerwowany,zwierze.kod_rezerwacji FROM zwierze, admin WHERE 1 AND admin.login = '"+login+"' AND admin.haslo = '"+haslo+"';";
+//
+//            ResultSet rs = statement.executeQuery(sql);
+//
+//            while (rs.next()){
+//                System.out.println(rs.getString(1) + ", " + rs.getString(2) + ", "+rs.getString(3) + ", " + rs.getString(4) + ", "+rs.getString(5) + ", " + rs.getString(6) + ", ");
+//            }
+//
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
+
+//    public String hashowanie(String haslo) throws NoSuchAlgorithmException {
+//        MessageDigest md = MessageDigest.getInstance("SHA-256");
+//
+//        byte[] hashedBytes = md.digest(haslo.getBytes());
+//
+//        return Base64.getEncoder().encodeToString(hashedBytes);
+//    }
 }
