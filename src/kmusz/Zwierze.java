@@ -11,6 +11,14 @@ public class Zwierze {
     public Zwierze() {
     }
 
+    public Zwierze(int id, String rodzaj, String imie, int wiek, boolean czyZarezerwowany, String kod_rezerwacji) {
+        this.id = id;
+        this.rodzaj = rodzaj;
+        this.imie = imie;
+        this.wiek = wiek;
+        this.czyZarezerwowany = czyZarezerwowany;
+        this.kod_rezerwacji = kod_rezerwacji;
+    }
 
     public Zwierze(int id, String rodzaj, String imie, int wiek, boolean czyZarezerwowany) {
         this.id = id;
