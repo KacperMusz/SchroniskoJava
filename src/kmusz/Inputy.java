@@ -152,7 +152,7 @@ private void szukaj(){
         if (slowo != null){
             slowo.trim();
         }
-        String sql = "";
+        String sql;
         if (slowo.equals("nie")){
             sql = "SELECT rodzaj, imie, wiek, czy_zarezerwowany FROM zwierze WHERE "
                 + "rodzaj LIKE '"+slowo+"' OR imie LIKE '"+slowo+"' OR wiek LIKE '"+slowo+"' OR czy_zarezerwowany = 0;";
@@ -314,9 +314,9 @@ private void szukaj(){
             System.out.println("czy napewno chcesz usunac to zwierze? (tak/nie)");
             przegladajKonkretneZwierze(id);
             String wybor = scanner.nextLine();
-            wybor.toLowerCase().trim();
+            wybor.trim().toLowerCase();
             if (wybor.equals("nie")){
-                return;
+                System.out.println("nie usunieto");
             }else if (wybor.equals("tak")){
                 String sqlUsun = "DELETE FROM `zwierze` WHERE `id` = " + id + ";";
                 Statement statementUsun = connection.createStatement();
